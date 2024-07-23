@@ -103,6 +103,7 @@ nav {
     #search-input {
         width: 150px;
         padding: 10px 10px;
+        font-size: 14px;
     }
     .blog-card {
         width: 100%;
