@@ -9,7 +9,8 @@ async function fetchRandomNews() {
         const apiUrl = `https://newsapi.org/v2/top-headlines?country=us&pageSize=20&apiKey=${apiKey}`;
         const response = await fetch(apiUrl);
         const data = await response.json();
-        return data.articles;
+        const articlesWithImages = data.articles.filter(article => article.urlToImage !== null); 
+        return articlesWithImages;
     } catch (error) {
         console.error("Error fetching random news", error);
         return [];
@@ -20,29 +21,34 @@ searchButton.addEventListener("click", async () => {
     const query = searchField.value.trim();
     if (query !== "") {
         try {
-            const articles = await fetchNewsQuery(query);
-            displayBlogs(articles);
+            const articlesWithImages = await fetchNewsQuery(query);
+            displayBlogs(articlesWithImages);
         } catch (error) {
             console.log("Error fetching news by query", error);
         }
     }
 })
 
-async function fetchNewsQuery(query) {
+async function fetchNewsQuery(query, pageSize = 20) {
     try {
-        const apiUrl = `https://newsapi.org/v2/everything?q=${query}&pageSize=20&apiKey=${apiKey}`;
+        const apiUrl = `https://newsapi.org/v2/everything?q=${query}&pageSize=${pageSize}&apiKey=${apiKey}`;
         const response = await fetch(apiUrl);
         const data = await response.json();
-        return data.articles;
+        if (data.status === "ok") {
+            const articlesWithImages = data.articles.filter(article => article.urlToImage !== null);
+            return articlesWithImages;
+        } else {
+            throw new Error(`NewsAPI error: ${data.message}`);
+        }
     } catch (error) {
         console.error("Error fetching random news", error);
         return [];
     }
 }
 
-function displayBlogs(articles) {
+function displayBlogs(articlesWithImages) {
     blogContainer.innerHTML = "";
-    articles.forEach((article) => {
+    articlesWithImages.forEach((article) => {
         const blogCard = document.createElement("div");
         blogCard.classList.add("blog-card");
         const img = document.createElement("img");
@@ -67,14 +73,15 @@ function displayBlogs(articles) {
         blogCard.addEventListener("click", () => {
             window.open(article.url, "_blank");
         });
+        // console.log(img.src, "*")   //** Added this **
         blogContainer.appendChild(blogCard);
     });
 }
 
 (async () => {
     try {
-        const articles = await fetchRandomNews();
-        displayBlogs(articles);
+        const articlesWithImages = await fetchRandomNews();
+        displayBlogs(articlesWithImages);
     } catch (error) {
         console.error("Error fetching random news", error);
     }
