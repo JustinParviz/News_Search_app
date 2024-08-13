@@ -4,18 +4,39 @@ const blogContainer = document.getElementById("blog-container");
 const searchField = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button");
 
-async function fetchRandomNews() {
+
+async function fetchTopNews(category) {
+    const apiUrl = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&pageSize=20&apiKey=${apiKey}`;
     try {
-        const apiUrl = `https://newsapi.org/v2/top-headlines?country=us&pageSize=20&apiKey=${apiKey}`;
         const response = await fetch(apiUrl);
         const data = await response.json();
-        const articlesWithImages = data.articles.filter(article => article.urlToImage !== null); 
-        return articlesWithImages;
+        if (data.status !== "ok") {
+            console.error(`Error fetching top news by category ${category}:`, data);
+            return [];
+        }
+        return data.articles;
     } catch (error) {
-        console.error("Error fetching random news", error);
+        console.error(`Error fetching top news by category ${category}`, error);
         return [];
     }
 }
+
+async function fetchAllTopNews() {
+    const categories = ["business", "entertainment", "health", "science", "sports", "technology"];
+    const allNews = {};
+    for (const category of categories) {
+        const articles = await fetchTopNews(category);
+        const articlesWithImages = articles.filter(article => article.urlToImage !== null);
+        allNews[category] = articlesWithImages;
+    }
+    return allNews;
+}
+
+
+// fetchAllTopNews().then(allNews => {
+//     console.log("All top news by category:", allNews);
+// });
+
 
 searchButton.addEventListener("click", async () => {
     const query = searchField.value.trim();
@@ -41,13 +62,15 @@ async function fetchNewsQuery(query, pageSize = 20) {
             throw new Error(`NewsAPI error: ${data.message}`);
         }
     } catch (error) {
-        console.error("Error fetching random news", error);
+        console.error("Error fetching news", error);
         return [];
     }
 }
 
-function displayBlogs(articlesWithImages) {
+
+function displayBlogs(allNews) {
     blogContainer.innerHTML = "";
+    const articlesWithImages = Object.values(allNews).flat();
     articlesWithImages.forEach((article) => {
         const blogCard = document.createElement("div");
         blogCard.classList.add("blog-card");
@@ -55,36 +78,27 @@ function displayBlogs(articlesWithImages) {
         img.src = article.urlToImage;
         img.alt = article.title;
         const title = document.createElement("h2");
-        // const truncatedTitle =
-        //     article.title.length > 30
-        //         ? article.title.slice(0, 30) + "...."
-        //         : article.title;
         title.textContent = article.title;
         const description = document.createElement("p");
-        // const truncatedDes =
-        //     article.description.length > 120
-        //         ? article.description.slice(0, 120) + "...."
-        //         : article.description;
         description.textContent = article.description;
-
         blogCard.appendChild(img);
         blogCard.appendChild(title);
         blogCard.appendChild(description);
         blogCard.addEventListener("click", () => {
             window.open(article.url, "_blank");
         });
-        // console.log(img.src, "*")   //** Added this **
         blogContainer.appendChild(blogCard);
     });
 }
 
+
 (async () => {
     try {
-        const articlesWithImages = await fetchRandomNews();
-        displayBlogs(articlesWithImages);
+        const allNews = await fetchAllTopNews();
+        console.log("All top news by category:", allNews);
+        displayBlogs(allNews);
     } catch (error) {
-        console.error("Error fetching random news", error);
+        console.error("Error fetching all top news", error);
     }
 })();
-
 
