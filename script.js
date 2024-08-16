@@ -111,6 +111,6 @@ function displayBlogs(allNews) {
     } catch (error) {
         console.error("Error fetching all top news", error);
     }
-})();
+})//();
 
 
