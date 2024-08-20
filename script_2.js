@@ -1,3 +1,4 @@
+// Real-Time News Data API via https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-news-data
 
 const options = {
     method: 'GET',
@@ -68,7 +69,7 @@ function displayBlogs(articlesWithImages) {
     } catch (error) {
         console.error("Error fetching World News", error);
     }
-})();
+})//();
 
 
 

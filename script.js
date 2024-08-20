@@ -1,3 +1,5 @@
+// NewsAPI via https://newsapi.org/
+
 const apiKey = "3d2716374a2447d9b93598ad74f02ef3"
 
 const blogContainer = document.getElementById("blog-container");
