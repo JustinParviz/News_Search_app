@@ -9,6 +9,7 @@ const options = {
 };
 
 
+const loader = document.querySelector(".loader");
 const blogContainer = document.getElementById("blog-container");
 const searchField = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button");
@@ -68,6 +69,9 @@ function displayBlogs(articlesWithImages) {
         displayBlogs(articlesWithImages);
     } catch (error) {
         console.error("Error fetching World News", error);
+    } finally {
+        loader.style.display = "none";
+        blogContainer.style.display = "block";
     }
 })//();
 
