@@ -140,7 +140,7 @@ it from my specifications */
 /* End of Code for Loading Animation */
 
 
-#section-container {
+.category-container {
     padding: 3rem 0;
     display: flex;
     justify-content: flex-start;
@@ -149,7 +149,7 @@ it from my specifications */
     margin-bottom: 20px;
 }
 
-.section-title-container {
+.category-title-container {
     display: flex;
     justify-content: center;
     align-items: center;

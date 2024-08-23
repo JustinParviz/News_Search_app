@@ -15,8 +15,8 @@ const searchField = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button");
 
 
-async function fetchWorldNews() {
-    const apiUrl = 'https://real-time-news-data.p.rapidapi.com/topic-headlines?topic=WORLD&limit=20&country=US&lang=en';
+async function fetchNews(topic, containerId) {
+    const apiUrl = 'https://real-time-news-data.p.rapidapi.com/topic-headlines?topic=${topic}&limit=20&country=US&lang=en';
 
     try {
         const response = await fetch(apiUrl, options);
@@ -26,16 +26,17 @@ async function fetchWorldNews() {
         console.log(articles, "*");
         const articlesWithImages = results.data.filter(data => data.photo_url !== null);
         console.log(articlesWithImages, "$");
-        return articlesWithImages;
+        displayBlogs (articlesWithImages, containerId);
     } catch (error) {
-        console.error("Error fetching World News:", error);
+        console.error(`Error fetching ${topic} News:`, error);
         return [];
     }
 }
 
 
-function displayBlogs(articlesWithImages) {
-    blogContainer.innerHTML = "";
+function displayBlogs(articlesWithImages, containerId) {
+    const categoryContainer = document.getElementById(containerId);
+    categoryContainer.innerHTML = "";
     articlesWithImages.forEach((article) => {
         const blogCard = document.createElement("div");
         blogCard.classList.add("blog-card");
@@ -58,22 +59,28 @@ function displayBlogs(articlesWithImages) {
             window.open(article.link, "_blank");
         });
    
-        blogContainer.appendChild(blogCard);
+        categoryContainer.appendChild(blogCard);
     });
 }
 
 
 (async () => {
     try {
-        const articlesWithImages = await fetchWorldNews();
-        displayBlogs(articlesWithImages);
+        await fetchNews("WORLD", "world-news-container");
+        await fetchNews("NATIONAL", "national-news-container");
+        await fetchNews("BUSINESS", "business-news-container");
+        await fetchNews("TECHNOLOGY", "technology-news-container");
+        await fetchNews("HEALTH", "health-news-container");
+        await fetchNews("SCIENCE", "science-news-container");
+        await fetchNews("SPORTS", "sports-news-container");
+        await fetchNews("ENTERTAINMENT", "entertainment-news-container");
     } catch (error) {
-        console.error("Error fetching World News", error);
+        console.error("Error fetching all news categories", error);
     } finally {
         loader.style.display = "none";
         blogContainer.style.display = "block";
     }
-})//();
+})();
 
 
 
