@@ -64,15 +64,27 @@ function displayBlogs(articlesWithImages, containerId) {
 }
 
 
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
 (async () => {
     try {
         await fetchNews("WORLD", "world-news-container");
+        await delay(1000);
         await fetchNews("NATIONAL", "national-news-container");
+        await delay(1000);
         await fetchNews("BUSINESS", "business-news-container");
+        await delay(1000);
         await fetchNews("TECHNOLOGY", "technology-news-container");
+        await delay(1000);
         await fetchNews("HEALTH", "health-news-container");
+        await delay(1000);
         await fetchNews("SCIENCE", "science-news-container");
+        await delay(1000);
         await fetchNews("SPORTS", "sports-news-container");
+        await delay(1000);
         await fetchNews("ENTERTAINMENT", "entertainment-news-container");
     } catch (error) {
         console.error("Error fetching all news categories", error);
@@ -80,7 +92,7 @@ function displayBlogs(articlesWithImages, containerId) {
         loader.style.display = "none";
         blogContainer.style.display = "block";
     }
-})();
+})//();
 
 
 
